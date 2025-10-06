@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Éditeur OpenAPI</title>
+      <link rel="stylesheet" href="style.css" />
+      <!-- Swagger UI styles (used if user selects Swagger) -->
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4/swagger-ui.css" />
+  </head>
+  <body>
+    <header>
+      <h1>Éditeur & rendu OpenAPI</h1>
+      <nav><a href="index.html">Accueil</a></nav>
+    </header>
+    <main>
+      <div class="editor-container">
+  <div class="editor-panel">
+          <div class="toolbar">
+            <button id="loadSample">Charger exemple</button>
+            <label class="filebtn">Charger un fichier<input id="fileInput" type="file" accept=".yaml,.yml,.json" style="display:none"></label>
+            <button id="formatBtn">Formater</button>
+            <button id="renderBtn">Rendu</button>
+            <button id="saveBtn">Sauvegarder</button>
+            <button id="clearBtn">Effacer</button>
+          
+          </div>
+          <textarea id="specEditor" placeholder="Collez ici votre spec OpenAPI (YAML ou JSON)"></textarea>
+          <div id="msg" aria-live="polite"></div>
+  </div>
+  <div class="splitter" title="Glisser pour redimensionner"></div>
+  <div class="render-panel">
+          <div class="renderer-select render-top">
+            <label><input type="radio" name="renderer" value="redoc"> Redoc</label>
+            <label><input type="radio" name="renderer" value="swagger" checked> Swagger UI</label>
+          </div>
+          <div id="specRender">Cliquez sur "Rendu" pour afficher la documentation</div>
+        </div>
+      </div>
+    </main>
+    
+
+  <script src="https://cdn.jsdelivr.net/npm/js-yaml@4.1.0/dist/js-yaml.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/redoc@next/bundles/redoc.standalone.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4/swagger-ui-bundle.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@4/swagger-ui-standalone-preset.js"></script>
+    <!-- CodeMirror for syntax highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/yaml/yaml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/matchbrackets.min.js"></script>
+    <script src="openapi.js"></script>
+  </body>
+</html>

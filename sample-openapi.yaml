@@ -1,0 +1,19 @@
+openapi: 3.0.0
+info:
+  title: API Exemple
+  version: 1.0.0
+paths:
+  /hello:
+    get:
+      summary: Retourne un message de bienvenue
+      responses:
+        '200':
+          description: Succès
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Bonjour"
