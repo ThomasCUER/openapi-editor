@@ -9,10 +9,14 @@ window.addEventListener('DOMContentLoaded', () => {
     tabSize: 2,
     indentUnit: 2,
     autofocus: false,
+    foldGutter: true,
+    gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
   });
   const loadSample = document.getElementById('loadSample');
   const fileInput = document.getElementById('fileInput');
   const formatBtn = document.getElementById('formatBtn');
+  const foldAllBtn = document.getElementById('foldAllBtn');
+  const unfoldAllBtn = document.getElementById('unfoldAllBtn');
   const renderBtn = document.getElementById('renderBtn');
   const saveBtn = document.getElementById('saveBtn');
   const clearBtn = document.getElementById('clearBtn');
@@ -24,27 +28,7 @@ window.addEventListener('DOMContentLoaded', () => {
     setTimeout(() => { if (msg.textContent === s) msg.textContent = ''; }, 3000);
   }
 
-  // Try to fetch the sample file; if fetch fails (file:// or blocked), fall back to embedded sample
-  const embeddedSample = `openapi: 3.0.0
-info:
-  title: API Exemple
-  version: 1.0.0
-paths:
-  /hello:
-    get:
-      summary: Retourne un message de bienvenue
-      responses:
-        '200':
-          description: Succès
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                    example: "Bonjour"`;
-
+  // Load sample from external file `sample-openapi.yaml` (no embedded fallback)
   loadSample.addEventListener('click', async () => {
     try {
       const resp = await fetch('sample-openapi.yaml');
@@ -54,10 +38,8 @@ paths:
       showMsg('Exemple chargé (fetch)');
       debouncedRender();
     } catch (e) {
-      // fallback to embedded sample
-      editor.setValue(embeddedSample);
-      showMsg('Exemple chargé (embarqué)');
-      debouncedRender();
+      console.error('Failed to load sample-openapi.yaml:', e);
+      showMsg('Erreur chargement exemple: ' + (e && e.message ? e.message : String(e)));
     }
   });
 
@@ -154,6 +136,23 @@ paths:
 
   // initial render if there's content
   if (editor.getValue().trim()) debouncedRender();
+
+  // fold/unfold utilities
+  function foldAll() {
+    const lastLine = editor.lastLine();
+    for (let i = 0; i <= lastLine; i++) {
+      editor.foldCode({line: i, ch: 0}, null, "fold");
+    }
+  }
+  function unfoldAll() {
+    const lastLine = editor.lastLine();
+    for (let i = 0; i <= lastLine; i++) {
+      editor.foldCode({line: i, ch: 0}, null, "unfold");
+    }
+  }
+
+  if (foldAllBtn) foldAllBtn.addEventListener('click', () => foldAll());
+  if (unfoldAllBtn) unfoldAllBtn.addEventListener('click', () => unfoldAll());
   
   // Resizable splitter logic
   const splitter = document.querySelector('.splitter');
