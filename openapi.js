@@ -17,7 +17,7 @@ window.addEventListener('DOMContentLoaded', () => {
   const formatBtn = document.getElementById('formatBtn');
   const foldAllBtn = document.getElementById('foldAllBtn');
   const unfoldAllBtn = document.getElementById('unfoldAllBtn');
-  const renderBtn = document.getElementById('renderBtn');
+  // renderBtn removed - rendering is automatic
   const saveBtn = document.getElementById('saveBtn');
   const clearBtn = document.getElementById('clearBtn');
   const msg = document.getElementById('msg');
@@ -116,8 +116,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
   const debouncedRender = debounce(tryParseAndRender, 450);
 
-  // keep the render button for manual use but also call debouncedRender
-  renderBtn.addEventListener('click', () => debouncedRender());
+  // manual render button removed; rendering happens automatically via editor change / load / renderer change
 
   const saved = localStorage.getItem('openapi-spec');
   if (saved) { editor.setValue(saved); showMsg('Spécification chargée depuis localStorage'); }
