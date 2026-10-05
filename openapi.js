@@ -118,11 +118,60 @@ paths:
     }
   }
 
+  function validateStringExamples(obj, path = '') {
+    const warnings = [];
+    
+    function traverse(node, currentPath) {
+      if (!node || typeof node !== 'object') return;
+      
+      // Check if this is a schema with properties
+      if (node.properties && typeof node.properties === 'object') {
+        Object.entries(node.properties).forEach(([propName, propDef]) => {
+          const propPath = currentPath ? `${currentPath}.${propName}` : propName;
+          
+          // Check if this property is a string without an example
+          if (propDef.type === 'string' && !propDef.example && propDef.example !== 0 && propDef.example !== '') {
+            warnings.push(propPath);
+          }
+          
+          // Recursively check nested properties
+          if (propDef.properties) {
+            traverse(propDef, propPath);
+          }
+          
+          // Check items for array types
+          if (propDef.items) {
+            traverse(propDef.items, propPath);
+          }
+        });
+      }
+      
+      // Recursively check nested objects (e.g., components.schemas)
+      if (node.type !== 'string' && node.type !== 'number' && node.type !== 'integer' && node.type !== 'boolean') {
+        Object.entries(node).forEach(([key, val]) => {
+          if (key !== 'properties' && typeof val === 'object') {
+            traverse(val, currentPath ? `${currentPath}.${key}` : key);
+          }
+        });
+      }
+    }
+    
+    traverse(obj, path);
+    return warnings;
+  }
+
   function tryParseAndRender() {
     const v = editor.getValue().trim();
     if (!v) { specRender.innerHTML = ''; showMsg('Éditeur vide'); return; }
     let obj;
     try { obj = JSON.parse(v); } catch (e) { try { obj = jsyaml.load(v); } catch (e2) { showMsg('Parsing erreur: ' + e2.message); return; } }
+    
+    // Validate string properties for examples
+    const warnings = validateStringExamples(obj);
+    if (warnings.length > 0) {
+      showMsg(`⚠️ ${warnings.length} propriété(s) string sans exemple: ${warnings.slice(0, 3).join(', ')}${warnings.length > 3 ? '...' : ''}`);
+    }
+    
     renderSpecObject(obj);
   }
 
